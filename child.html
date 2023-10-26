@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Child</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <h4>This is a child document</h4>
+    <div id="message"></div>
+
+    <script>
+        let testEventMethod = window.addEventListener ? 'addEventListener' : 'attachEvent';
+        let testEventer = window[testEventMethod];
+        let messageEvent = testEventMethod == 'attachEvent' ? 'onmessage' : 'message';
+
+        var allowedOrigins = ['http://localhost:3141', 'https://another.domain.com'];
+
+        // This listens for possible events from the parent.
+        testEventer(messageEvent, (e) => 
+        {
+            // Abort request if origin is invalid
+            if (!allowedOrigins.includes(event.origin)) return;
+
+            if (e.data.event_id === 'event-3') {
+                document.getElementById('message').innerText = e.data.data.message;
+                document.getElementById('message').style.display = 'block';
+                // Continue coding here...
+            }
+        }, false);
+
+        setTimeout(function () {
+            var params = {
+                event_id: 'event-1',
+                data: {
+                    message: 'Hello, this is a message from child!',
+                    // more parameters
+                }
+                
+            }
+            window.parent.postMessage(params, 'http://localhost:3141'); // Or you can use * for any domain
+        }, 3000);
+
+    </script>
+</body>
+</html>

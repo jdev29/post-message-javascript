@@ -1,0 +1,26 @@
+iframe {
+    border: 1px solid rgb(19, 108, 198);
+    height: 200px;
+    width: 500px;
+    margin: 10px;
+    margin-top: 40px;
+}
+
+h4 {
+    margin: 10px;
+}
+
+#message {
+    background-color: yellow;
+    margin: 10px;
+    padding: 10px;
+    display: none;
+}
+
+button {
+    background-color: rgb(119, 210, 255);
+    padding: 10px;
+    font-weight: bold;
+    border: 1px solid rgb(119, 210, 255);
+    cursor: pointer;
+}

@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Test postMessage</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <iframe id="iframe" src="child.html"></iframe>
+    <h4>In 3 seconds you will receive a message from the content of the iframe (child -> parent)</h4>
+
+    <div id="message"></div>
+
+    <button onclick="sendPostMessage()">Send message (parent -> child)</button>
+
+    <script type="text/javascript">
+        let testEventMethod = window.addEventListener ? 'addEventListener' : 'attachEvent';
+        let testEventer = window[testEventMethod];
+        let messageEvent = testEventMethod == 'attachEvent' ? 'onmessage' : 'message';
+        let unload = window.attachEvent ? 'onbeforeunload' : 'beforeunload'; /// make IE7, IE8 compitable
+
+
+        // This listens for possible events from the child.
+        testEventer(messageEvent, (e) => 
+        {
+            if (e.data.event_id === 'event-1') {
+                document.getElementById('message').innerText = e.data.data.message;
+                document.getElementById('message').style.display = 'block';
+                // Continue coding here...
+            }
+
+            if (e.data.event_id === 'event-2') {
+                console.log(e.data);
+                // Continue coding here...
+            }
+        }, false);
+
+        // This detects window closing
+        testEventer(unload, function(e) { // For >=IE7, Chrome, Firefox
+            let message = 'Are you sure to leave the page?';
+            (e || window.event).returnValue = message;
+            return message;
+        });
+
+        function sendPostMessage()
+        {
+            let params = {
+                event_id: 'event-3',
+                data: {
+                    message: 'Hello, this is a message from parent!',
+                    // more parameters
+                }   
+            }
+
+            let iframeContent = document.getElementById('iframe').contentWindow;
+            iframeContent.postMessage(params, 'http://localhost:3141'); // Or you can use * for any domain
+        }
+
+    </script>
+</body>
+</html>
